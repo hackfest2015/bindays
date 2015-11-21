@@ -45,7 +45,7 @@
             </div>
         </div> -->
         <div class="pane">
-            <input id="address" type="text" value="42 Alice St" />
+            <input id="address" type="text" value="Your Address" />
             <br />
             <input id="searchButton" onclick="submitAddress()" type="button" value="Search" />
         </div>
@@ -119,7 +119,7 @@
                     $("#address").val(results[0].short_name + " " + results[1].short_name);
                 });
                 
-                var message = "No bin collection data for this area.";
+                var message = "No collection data for this area.";
                 output.innerHTML = message;
                 $.getJSON("http://gisservices.scc.qld.gov.au/arcgis/rest/services/Health/DomesticBinCollectionDays_SCRC/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=" + position.coords.longitude + "," + position.coords.latitude + "&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json", function(data) {
                 //$.getJSON("http://gisservices.scc.qld.gov.au/arcgis/rest/services/Health/DomesticBinCollectionDays_SCRC/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=" + "153.11641,-26.8211" + "&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json", function(data) {
@@ -141,11 +141,14 @@
             }
             
             function submitAddress() {
-                var address = $("#address").val();
-                var parts = address.split(" ");
-                var number = parts[0];
-                parts.splice(0, 1);
-                var street = parts.join(" ");
+                output.innerHTML = "Checking your location...";
+                getLocation();
+                
+                //var address = $("#address").val();
+                //var parts = address.split(" ");
+                //var number = parts[0];
+                //parts.splice(0, 1);
+                //var street = parts.join(" ");
                 
             }
             
