@@ -36,12 +36,12 @@ body {
         color-stop(0.51, #E4E4E4)
     );
     background-attachment:fixed;
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
+    font-family: Arial, 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, sans-serif;
+    font-size:14px;
+    text-shadow: 2px 2px #BBB;
     height:100%;
     margin:0px;
     padding:0px;
-    text-transform:uppercase;
     width:100%;
 }
 
@@ -70,8 +70,8 @@ body {
 }
 
 h1 {
-    font-size:24px;
-    font-weight:normal;
+    font-size:32px;
+    font-weight:bold;
     margin:0px;
     overflow:visible;
     padding:0px;
@@ -121,9 +121,14 @@ h1 {
 
 .bin {
     display: inline-block;
-    padding: 10px;
+    padding: 6px;
+    padding-top: 32px;
+    padding-bottom: 32px;
 }
 
+.bin img { 
+    width: 80px;
+}
 
 
 
