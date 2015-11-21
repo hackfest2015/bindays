@@ -31,6 +31,7 @@
         <title>Bin Days</title>
         <script type="text/javascript">
             $(document).ready(function() {
+                getLocation();
                 updateBins();
             });
         </script>
@@ -45,6 +46,8 @@
         </div> -->
         <div class="pane">
             <input id="address" type="text" value="42 Alice St" />
+            <br />
+            <input id="searchButton" onclick="submitAddress()" type="button" value="Search" />
         </div>
         <div class="pane nobg">
             <div class="bin">
@@ -58,7 +61,7 @@
             </div>
         </div>
         <div id="collection" class="pane">
-            3 days until collection.
+            Checking your location... <!-- 3 days until collection. -->
         </div>
         <div class="pane">
             <img class="stats" src="img/graph.png" />
@@ -69,6 +72,7 @@
             // 0: gray; 1: to put out; 2: ticked
             // Red, Green, Yellow
             var ticks = [1, 0, 1];
+            var output = document.getElementById("collection");
             
             app.initialize();
             
@@ -98,6 +102,79 @@
                     $(anchor.children()[0]).attr("src", ticks[i] === 0 ? "img/bin-gray.png" : "img/" + binIDs[i] + ".png");
                 }
             }
+            
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(foundPosition);
+                } else {
+                    output.innerHTML = "Geolocation is not supported by this device.";
+                }
+            }
+            
+            function foundPosition(position) {
+                document.getElementById("searchButton").value = position.coords.latitude + ", " + position.coords.longitude;
+                
+                $.getJSON("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.coords.latitude + "," + position.coords.longitude + "&sensor=true", function(data) { 
+                    var results = data.results[0].address_components; 
+                    $("#address").val(results[0].short_name + " " + results[1].short_name);
+                });
+                
+                var message = "No bin collection data for this area.";
+                output.innerHTML = message;
+                $.getJSON("http://gisservices.scc.qld.gov.au/arcgis/rest/services/Health/DomesticBinCollectionDays_SCRC/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=" + position.coords.longitude + "," + position.coords.latitude + "&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json", function(data) {
+                //$.getJSON("http://gisservices.scc.qld.gov.au/arcgis/rest/services/Health/DomesticBinCollectionDays_SCRC/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=" + "153.11641,-26.8211" + "&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json", function(data) {
+                    var json = data;
+                    //alert(json.features.length);
+                    if (json.features.length > 0) {
+                        var today = new Date();
+                        var collectionDay = getIndexFromDay(json.features[0].attributes.CollectionDay);
+                        var daysRemaining = (collectionDay - today.getDay() + 7) % 7;
+                        
+                        if (daysRemaining === 0) message = "The bins are collected today!";
+                        else if (daysRemaining === 1) message = "The bins are collected tomorrow.";
+                        else message = daysRemaining + " days until bin collection.";
+                    }
+                    
+                    output.innerHTML = message;
+                });
+                    
+            }
+            
+            function submitAddress() {
+                var address = $("#address").val();
+                var parts = address.split(" ");
+                var number = parts[0];
+                parts.splice(0, 1);
+                var street = parts.join(" ");
+                
+            }
+            
+            
+            // 0=Sunday, 1=Monday, etc.
+            function getDayFromIndex(dayIndex) {
+                return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
+            }
+            function getIndexFromDay(day) {
+                switch (day) {
+                    case "Sunday":
+                        return 0;
+                    case "Monday":
+                        return 1;
+                    case "Tuesday":
+                        return 2;
+                    case "Wednesday":
+                        return 3;
+                    case "Thursday":
+                        return 4;
+                    case "Friday":
+                        return 5;
+                    case "Saturday":
+                        return 6;
+                    default: 
+                        return 1;
+                }
+            }
+            
             
         </script>
     </body>
