@@ -142,7 +142,7 @@ h1 {
     width: 80px;
 }
 
-.bin img[src="img/bin-gray.png"] {
+.bin img[src="img/bin-gray.png"], .bin img[src="img/bin-gray-small.png"],  {
     opacity: 0.6;
 }
 
