@@ -142,6 +142,10 @@ h1 {
     width: 80px;
 }
 
+.bin img[src="img/bin-gray.png"] {
+    opacity: 0.6;
+}
+
 #collection {
     font-size: 18px;
     font-weight: bold;
