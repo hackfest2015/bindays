@@ -51,13 +51,13 @@
         </div>
         <div class="pane nobg">
             <div class="bin">
-                <a id="bin-red"><img src="img/bin-red.png" /><img src="img/tick.png" class="tick" /></a>
+                <a id="bin-red"><img src="img/bin-gray.png" /><img src="img/tick.png" class="tick" /></a>
             </div>
             <div class="bin">
-                <a id="bin-green"><img src="img/bin-green.png" /><img src="img/tick.png" class="tick" /></a>
+                <a id="bin-green"><img src="img/bin-gray.png" /><img src="img/tick.png" class="tick" /></a>
             </div>
             <div class="bin">
-                <a id="bin-yellow"><img src="img/bin-yellow.png" /><img src="img/tick.png" class="tick" /></a>
+                <a id="bin-yellow"><img src="img/bin-gray.png" /><img src="img/tick.png" class="tick" /></a>
             </div>
         </div>
         <div id="collection" class="pane">
@@ -71,7 +71,7 @@
         <script type="text/javascript">
             // 0: gray; 1: to put out; 2: ticked
             // Red, Green, Yellow
-            var ticks = [1, 0, 1];
+            var ticks = [0, 0, 0];
             var output = document.getElementById("collection");
             
             app.initialize();
@@ -120,7 +120,6 @@
                 });
                 
                 var message = "No collection data for this area.";
-                output.innerHTML = message;
                 $.getJSON("http://gisservices.scc.qld.gov.au/arcgis/rest/services/Health/DomesticBinCollectionDays_SCRC/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=" + position.coords.longitude + "," + position.coords.latitude + "&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json", function(data) {
                 //$.getJSON("http://gisservices.scc.qld.gov.au/arcgis/rest/services/Health/DomesticBinCollectionDays_SCRC/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=" + "153.11641,-26.8211" + "&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelWithin&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json", function(data) {
                     var json = data;
@@ -134,10 +133,11 @@
                         else if (daysRemaining === 1) message = "The bins are collected tomorrow.";
                         else message = daysRemaining + " days until bin collection.";
                     }
-                    
+                    ticks = [1, 0, 1];
                     output.innerHTML = message;
+                    updateBins();
                 });
-                    
+                output.innerHTML = message;
             }
             
             function submitAddress() {
