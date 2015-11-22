@@ -47,11 +47,11 @@
         <div class="pane">
             <input id="address" type="text" value="Your Address" />
             <br />
-            <input id="searchButton" onclick="submitAddress()" type="button" value="Search" />
+            <input id="searchButton" onclick="submitAddress(this)" type="button" value="Search" />
         </div>
         <div class="pane nobg">
             <div class="bin">
-                <a id="bin-red"><img src="img/bin-gray.png" /><img src="img/tick.png" class="tick" /></a>
+                <a id="bin-red"><img src="img/bin-gray-small.png" /><img src="img/tick.png" class="tick" /></a>
             </div>
             <div class="bin">
                 <a id="bin-green"><img src="img/bin-gray.png" /><img src="img/tick.png" class="tick" /></a>
@@ -99,7 +99,7 @@
                 for (var i = 0; i < binIDs.length; i++) {
                     var anchor = $("#" + binIDs[i]);
                     $(anchor.children()[1]).css("visibility", ticks[i] === 2 ? "visible" : "hidden");
-                    $(anchor.children()[0]).attr("src", ticks[i] === 0 ? "img/bin-gray.png" : "img/" + binIDs[i] + ".png");
+                    $(anchor.children()[0]).attr("src", ticks[i] === 0 ? (binIDs[i] === "bin-red" ? "img/bin-gray-small.png" : "img/bin-gray.png") : "img/" + binIDs[i] + ".png");
                 }
             }
             
@@ -140,8 +140,12 @@
                 output.innerHTML = message;
             }
             
-            function submitAddress() {
+            function submitAddress(button) {
                 output.innerHTML = "Checking your location...";
+                ticks = [0, 0, 0];
+                $("#address").val("Your Address");
+                button.value = "Searching...";
+                updateBins();
                 getLocation();
                 
                 //var address = $("#address").val();
